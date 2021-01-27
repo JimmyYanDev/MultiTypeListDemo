@@ -22,7 +22,6 @@ class MainFragment : Fragment() {
     private lateinit var viewModel: MainViewModel
     private lateinit var mainRecyclerView: RecyclerView
     private lateinit var mainAdapter: MainAdapter
-    private lateinit var shortCuts: MutableList<ShortCut>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -35,13 +34,13 @@ class MainFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
         initData()
-        mainAdapter = MainAdapter(shortCuts, viewModel)
+        mainAdapter = MainAdapter(viewModel)
         val layoutManager = GridLayoutManager(context, 3)
         mainRecyclerView.adapter = mainAdapter
         mainRecyclerView.layoutManager = layoutManager
         layoutManager.spanSizeLookup = object : SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                return when(shortCuts[position].type) {
+                return when(viewModel.shortCuts.value!![position].type) {
                     0 -> 3
                     1 -> 1
                     2 -> 1
@@ -53,22 +52,7 @@ class MainFragment : Fragment() {
     }
 
     private fun initData() {
-        shortCuts = mutableListOf()
-        shortCuts.add(ShortCut(0, "Title1", "", 2, 0))
-        shortCuts.add(ShortCut(0, "switch1", "", 2, 1))
-        shortCuts.add(ShortCut(0, "switch2", "", 2, 1))
-        shortCuts.add(ShortCut(0, "switch3", "", 2, 1))
-        shortCuts.add(ShortCut(0, "switch4", "", 2, 1))
-        shortCuts.add(ShortCut(0, "switch5", "", 2, 1))
-
-        shortCuts.add(ShortCut(0, "divider", "", 2, 3))
-
-        shortCuts.add(ShortCut(0, "Title2", "", 2, 0))
-        shortCuts.add(ShortCut(0, "intent1", "", 2, 2))
-        shortCuts.add(ShortCut(0, "intent2", "", 2, 2))
-        shortCuts.add(ShortCut(0, "intent3", "", 2, 2))
-        shortCuts.add(ShortCut(0, "intent4", "", 2, 2))
-        shortCuts.add(ShortCut(0, "intent5", "", 2, 2))
+        viewModel.getShortCuts()
     }
 
     override fun onResume() {

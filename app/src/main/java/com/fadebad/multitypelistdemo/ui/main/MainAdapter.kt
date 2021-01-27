@@ -15,18 +15,25 @@ import com.fadebad.multitypelistdemo.logic.main.model.ShortCut
  * Email: 956462326@qq.com
  * Describe:
  **/
-class MainAdapter(private var shortCuts: List<ShortCut>, private val mainViewModel: MainViewModel)
+class MainAdapter(private val mainViewModel: MainViewModel)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    companion object {
+        const val TITLE_VIEw = 0
+        const val SWITCH_VIEw = 1
+        const val INTENT_VIEw = 2
+        const val DIVIDER_VIEw = 3
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
-            0 -> {
+            TITLE_VIEw -> {
                 TitleViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.main_title_recycle_item, parent, false))
             }
-            1 -> {
+            SWITCH_VIEw -> {
                 SwitchViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.main_switch_recycle_item, parent, false))
             }
-            2 -> {
+            INTENT_VIEw -> {
                 IntentViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.main_intent_recycle_item, parent, false))
             }
             else -> {
@@ -35,12 +42,10 @@ class MainAdapter(private var shortCuts: List<ShortCut>, private val mainViewMod
         }
 
 
-    override fun getItemCount(): Int {
-        return shortCuts.size
-    }
+    override fun getItemCount() = mainViewModel.shortCuts.value!!.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val data = shortCuts[position]
+        val data = mainViewModel.shortCuts.value!![position]
         when (holder) {
             is TitleViewHolder -> {
                 holder.titleText.text = data.label
@@ -57,9 +62,7 @@ class MainAdapter(private var shortCuts: List<ShortCut>, private val mainViewMod
         }
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return shortCuts[position].type
-    }
+    override fun getItemViewType(position: Int) = mainViewModel.shortCuts.value!![position].type
 
     class SwitchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val shortCutIcon = itemView.findViewById<ImageView>(R.id.shortCutIcon)
