@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.RecyclerView
 import com.fadebad.multitypelistdemo.R
 import com.fadebad.multitypelistdemo.logic.main.model.ShortCut
@@ -35,12 +36,24 @@ class MainFragment : Fragment() {
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
         initData()
         mainAdapter = MainAdapter(shortCuts, viewModel)
-        val layoutManager = GridLayoutManager(context, 4)
+        val layoutManager = GridLayoutManager(context, 3)
         mainRecyclerView.adapter = mainAdapter
         mainRecyclerView.layoutManager = layoutManager
+        layoutManager.spanSizeLookup = object : SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return when(shortCuts[position].type) {
+                    0 -> 3
+                    1 -> 1
+                    2 -> 1
+                    else -> 3
+                }
+            }
+
+        }
     }
 
     private fun initData() {
+        shortCuts = mutableListOf()
         shortCuts.add(ShortCut(0, "Title1", "", 2, 0))
         shortCuts.add(ShortCut(0, "switch1", "", 2, 1))
         shortCuts.add(ShortCut(0, "switch2", "", 2, 1))
